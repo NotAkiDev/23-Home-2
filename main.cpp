@@ -11,10 +11,7 @@ int main() {
      * file << matrix name;
      */
     Matrix mtx(2, 2);
-    Matrix mtx2(2, 2);
-    if (mtx == mtx2) {
-        cout << "Матрицы равны" << endl;
-    }
+    cout << !mtx * mtx;
     /*
      * Синтаксис конструктора матриц
      * Matrix mtx(3, 3) -> ввод матрицы из консоли

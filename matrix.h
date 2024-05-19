@@ -8,43 +8,52 @@
 
 using namespace std;
 
+template<typename T>
 class Matrix {
 private:
     int cols;
     int rows;
-    vector<vector<double>> mtx;
+    vector<vector<T>> mtx;
 
     // Дружелюбные перегрузки для взаимодействия с приватными переменными
 
     // Изменяют исходную матрицу
-    friend Matrix operator*(const Matrix &A, const Matrix &B);
+    template<typename U>
+    friend Matrix<U> operator*(const Matrix<U> &A, const Matrix<U> &B);
 
-    friend Matrix operator*(Matrix &A, double num);
+    template<typename U>
+    friend Matrix<U> operator*(Matrix<U> &A, double num);
 
     // Не изменяют исходную, возвращают новую матрицу
-    friend Matrix operator+(const Matrix &A, const Matrix &B);
+    template<typename U>
+    friend Matrix<U> operator+(const Matrix<U> &A, const Matrix<U> &B);
 
-    friend Matrix operator-(const Matrix &A, const Matrix &B);
+    template<typename U>
+    friend Matrix<U> operator-(const Matrix<U> &A, const Matrix<U> &B);
 
-    friend Matrix operator!(Matrix &A);
+    template<typename U>
+    friend Matrix<U> operator!(Matrix<U> &A);
 
     // Перегрузки вывода в консоль и файл
-    friend ostream& operator<<(ostream &out, const Matrix &A);
+    template<typename U>
+    friend ostream& operator<<(ostream &out, const Matrix<U> &A);
 
-    friend ofstream& operator<<(ofstream &of, const Matrix &A);
+    template<typename U>
+    friend ofstream& operator<<(ofstream &of, const Matrix<U> &A);
 
 
 public:
     // Для ввода из консоли и корректной работы функций, которые создают матрицы
-    Matrix(int rows, int cols, string file_path = ""); // Конструктор для ввода из файла
+    Matrix<T>(int rows, int cols, string file_path = ""); // Конструктор для ввода из файла
 
 
     // Функции поиска детерминанта.
-    double determinant();
-    Matrix minor(long minor_i, long minor_j);
+    T determinant();
+
+    Matrix<T> minor(long minor_i, long minor_j);
 
     // Алгебраическое дополнение и транспонирование для обратной матрицы
-    Matrix mtx_AA();
-    Matrix transpose();
+    Matrix<T> mtx_AA();
+    Matrix<T> transpose();
 };
 #endif

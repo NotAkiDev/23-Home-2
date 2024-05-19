@@ -11,7 +11,6 @@ bool IsExist(long rows, long cols) {
     exit(EXIT_FAILURE);
 }
 
-
 bool IsPossibleEdit(int rows_a, int rows_b, int a_cols, int b_cols) {
     if (rows_a == rows_b && a_cols == b_cols)
         return true;
@@ -113,93 +112,61 @@ Matrix operator-(const Matrix &A, const Matrix &B) {
 
 };
 
-bool operator==(const Matrix &A, const Matrix &B) {
-    if (IsPossibleEdit(A.rows, B.rows, A.cols, B.cols)) {
-        for (int i = 0; i < A.rows; ++i) {
-            for (int j = 0; j < B.cols; ++j) {
-                if (A.mtx[i][j] != B.mtx[i][j])
-                    return false;
-            }
-        }
-        return true;
-    }
-};
-
-bool operator==(const Matrix &A, const double num) {
-    for (int i = 0; i < A.rows; ++i) {
-        for (int j = 0; j < A.cols; ++j) {
-            if (i == j) {
-                if (A.mtx[i][j] != num)
-                    return false;
-            } else {
-                if (A.mtx[i][j] != 0)
-                    return false;
-            }
-        }
-    }
-    return true;
-};
-
-bool operator!=(const Matrix &A, const double num) {
-    return !(A == num);
-}
-
-bool operator!=(const Matrix &A, const Matrix &B) {
-    return !(A == B);
-};
-
 Matrix Matrix::minor(long minor_i, long minor_j) {
     Matrix result_mtx(Matrix::rows - 1, Matrix::cols - 1, "none");
-    for (long i = 0, progress_i = 0; i < Matrix::rows; ++i) {
+    for (long i = 0; i < Matrix::rows; ++i) {
         if (minor_i == i)
             continue;
 
-        for (long j = 0, progress_j = 0; j < Matrix::cols; ++j) {
+        vector<double> temp;
+        for (long j = 0; j < Matrix::cols; ++j) {
             if (j != minor_j) {
-                result_mtx.mtx[progress_i][progress_j] = mtx[i][j];
-                ++progress_j;
+                temp.push_back(mtx[i][j]);
             }
-
         }
-
-        ++progress_i;
+        result_mtx.mtx.push_back(temp);
     }
     return result_mtx;
 }
 
 double Matrix::determinant() {
-    if (Matrix::rows != Matrix::cols) {
+    if (rows != cols) {
         cerr << "Детерминант не определён для прямоугольной матрицы" << endl;
         exit(EXIT_FAILURE);
-    } else if (rows == 1)
+    } else if (rows == 1) {
         return mtx[0][0];
-    else { // Детерминант n-ого порядка, это сумма произведений элементов первой строки на их алгебраические дополнения
-        double determinant = 0;
-        for (long i = 0; i < Matrix::cols; ++i) {
-            determinant += (pow((-1), i) * Matrix::mtx[0][i] * minor(0, i).determinant());
+    } else {
+        double det = 0;
+        for (int i = 0; i < cols; ++i) {
+            det += pow((-1), i) * mtx[0][i] * minor(0, i).determinant();
         }
-        if (determinant == 42) {
+        if (det == 42) {
             cerr << "Похоже, что эта матрица - Ответ на главный вопрос жизни, Вселенной и всего такого...\n";
         }
-        return determinant;
+        return det;
     }
 }
 
 Matrix Matrix::mtx_AA() {
-    Matrix result_matrix(Matrix::rows, Matrix::cols, "none");
-    for (long i = 0; i < Matrix::rows; ++i) {
-        for (long j = 0; j < Matrix::cols; ++j) {
-            result_matrix.mtx[i][j] = pow(-1, (i + j) % 2) * Matrix::minor(i, j).determinant();
+    Matrix result_matrix(rows, cols, "none");
+    for (int i = 0; i < rows; ++i) {
+        vector<double> temp;
+        for (int j = 0; j < cols; ++j) {
+            temp.push_back(pow(-1, (i + j) % 2) * minor(i, j).determinant());
         }
+        result_matrix.mtx.push_back(temp);
     }
     return result_matrix;
 }
 
 Matrix Matrix::transpose() {
-    Matrix result_matrix(Matrix::cols, Matrix::rows, "none");
-    for (long i = 0; i < Matrix::cols; ++i) {
-        for (long j = 0; j < Matrix::rows; ++j)
-            result_matrix.mtx[i][j] = mtx[j][i];
+    Matrix result_matrix(cols, rows, "none");
+    for (int i = 0; i < cols; ++i) {
+        vector<double> temp;
+        for (int j = 0; j < rows; ++j) {
+            temp.push_back(mtx[j][i]);
+        }
+        result_matrix.mtx.push_back(temp);
     }
     return result_matrix;
 }
@@ -210,8 +177,8 @@ Matrix operator!(Matrix &A) {
         cerr << "Матрица вырождена, det = 0\nНет обратной матрицы" << endl;
         exit(EXIT_FAILURE);
     } else {
-        Matrix result = (A.mtx_AA().transpose());
-        result * (1.0 / A.determinant());
+        Matrix result = A.mtx_AA().transpose();
+        result = result * (1.0 / det);
         return result;
     }
 }
