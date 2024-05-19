@@ -10,7 +10,11 @@ int main() {
      * ofstream file("filename");
      * file << matrix name;
      */
-
+    Matrix mtx(2, 2);
+    Matrix mtx2(2, 2);
+    if (mtx == mtx2) {
+        cout << "Матрицы равны" << endl;
+    }
     /*
      * Синтаксис конструктора матриц
      * Matrix mtx(3, 3) -> ввод матрицы из консоли

@@ -11,12 +11,6 @@ bool IsExist(long rows, long cols) {
     exit(EXIT_FAILURE);
 }
 
-void Matrix::AllocMem() {
-    Matrix::mtx = new double *[Matrix::rows];
-    for (int i = 0; i < Matrix::rows; ++i) {
-        Matrix::mtx[i] = new double[Matrix::cols];
-    }
-}
 
 bool IsPossibleEdit(int rows_a, int rows_b, int a_cols, int b_cols) {
     if (rows_a == rows_b && a_cols == b_cols)
@@ -32,25 +26,28 @@ Matrix::Matrix(int rows, int cols, string file_path) {
     if (IsExist(rows, cols)) {
         Matrix::rows = rows;
         Matrix::cols = cols;
-        AllocMem();
         if (file_path != "none" && !file_path.empty()) {
             ifstream file(file_path);
             for (int i = 0; i < rows; ++i) {
+                vector<double> temp;
                 for (int j = 0; j < cols; ++j) {
                     double element;
                     file >> element;
-                    mtx[i][j] = element;
+                    temp.push_back(element);
                 }
+                mtx.push_back(temp);
             }
             file.close();
         } else if (file_path.empty()) {
             cout << "Введите элементы матрицы: " << endl;
             for (int i = 0; i < rows; i++) {
+                vector<double> temp;
                 for (int j = 0; j < cols; j++) {
                     double element;
                     cin >> element;
-                    mtx[i][j] = element;
+                    temp.push_back(element);
                 }
+                mtx.push_back(temp);
             }
         }
     }
@@ -72,11 +69,15 @@ Matrix operator*(const Matrix &A, const Matrix &B) {
     } else {
         Matrix result(A.rows, B.cols, "none");
         for (int i = 0; i < A.rows; ++i) {
+            vector<double> temp;
             for (int j = 0; j < B.cols; ++j) {
+                double temp_sum = 0;
                 for (int k = 0; k < A.cols; ++k) {
-                    result.mtx[i][j] += A.mtx[i][k] * B.mtx[k][j];
+                    temp_sum += A.mtx[i][k] * B.mtx[k][j];
                 }
+                temp.push_back(temp_sum);
             }
+            result.mtx.push_back(temp);
         }
         return result;
     }
@@ -87,9 +88,11 @@ Matrix operator+(const Matrix &A, const Matrix &B) {
     if (IsPossibleEdit(A.rows, B.rows, A.cols, B.cols)) {
         Matrix result(A.rows, B.cols, "none");
         for (int i = 0; i < A.rows; ++i) {
+            vector<double> temp;
             for (int j = 0; j < B.cols; ++j) {
-                result.mtx[i][j] = A.mtx[i][j] + B.mtx[i][j];
+                temp.push_back(A.mtx[i][j] + B.mtx[i][j]);
             }
+            result.mtx.push_back(temp);
         }
         return result;
     }
@@ -99,9 +102,11 @@ Matrix operator-(const Matrix &A, const Matrix &B) {
     if (IsPossibleEdit(A.rows, B.rows, A.cols, B.cols)) {
         Matrix result(A.rows, B.cols, "none");
         for (int i = 0; i < A.rows; ++i) {
+            vector<double> temp;
             for (int j = 0; j < B.cols; ++j) {
-                result.mtx[i][j] = A.mtx[i][j] - B.mtx[i][j];
+                temp.push_back(A.mtx[i][j] - B.mtx[i][j]);
             }
+            result.mtx.push_back(temp);
         }
         return result;
     }
@@ -142,40 +147,6 @@ bool operator!=(const Matrix &A, const double num) {
 bool operator!=(const Matrix &A, const Matrix &B) {
     return !(A == B);
 };
-
-void Matrix::ET_type1(long row1, long row2) {
-    if (row1 < 0 || row1 > Matrix::rows || row2 < 0 || row2 > Matrix::rows) {
-        cerr << "Некорректные параметры преобразования";
-        exit(EXIT_FAILURE);
-    }
-    swap(Matrix::mtx[row1 - 1], Matrix::mtx[row2 - 1]);
-}
-
-void Matrix::ET_type2(long row, double num) {
-    if (row < 0 || row > Matrix::rows) {
-        cerr << "Некорректные параметры преобразования";
-        exit(EXIT_FAILURE);
-    }
-    if (num == 0) {
-        cerr << "Такое преобразование приведёт к потере данных в матрице\n";
-    }
-    for (int i = 0; i < Matrix::cols; ++i) {
-        Matrix::mtx[row - 1][i] *= num;
-    }
-}
-
-void Matrix::ET_type3(long row1, long row2, double num) {
-    if (row1 < 0 || row1 > Matrix::rows || row2 < 0 || row2 > Matrix::rows) {
-        cerr << "Некорректные параметры преобразования";
-        exit(EXIT_FAILURE);
-    }
-    if (num == 0) {
-        cerr << "Бессмысленное преобразование\n";
-    }
-    for (int i = 0; i < Matrix::cols; ++i) {
-        Matrix::mtx[row1 - 1][i] += (Matrix::mtx[row2 - 1][i] * num);
-    }
-}
 
 Matrix Matrix::minor(long minor_i, long minor_j) {
     Matrix result_mtx(Matrix::rows - 1, Matrix::cols - 1, "none");
