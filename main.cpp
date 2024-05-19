@@ -10,7 +10,7 @@ int main() {
      * ofstream file("filename");
      * file << matrix name;
      */
-    Matrix mtx(2, 2);
+    Matrix<float> mtx(2, 2);
     cout << !mtx * mtx;
     /*
      * Синтаксис конструктора матриц
