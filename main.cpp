@@ -10,8 +10,7 @@ int main() {
      * ofstream file("filename");
      * file << matrix name;
      */
-    Matrix<float> mtx(2, 2);
-    cout << !mtx * mtx;
+    Matrix<int> zeroMatrix = Matrix<int>::zeros(3, 3);
     /*
      * Синтаксис конструктора матриц
      * Matrix mtx(3, 3) -> ввод матрицы из консоли

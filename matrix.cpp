@@ -62,6 +62,28 @@ Matrix<T> operator*(Matrix<T> &A, double num) {
     return A;
 }
 template<typename T>
+static Matrix<T> zeros(int rows, int cols) {
+    Matrix<T> zeroMatrix(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        vector<T> row(cols, 0);
+        zeroMatrix.mtx.push_back(row);
+    }
+    return zeroMatrix;
+}
+template<typename T>
+static Matrix<T> ones(int rows, int cols) {
+    Matrix<T> matrx(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        vector<T> row(cols, 0);
+        if (i < cols) {
+            row[i] = 1;
+        }
+        matrx.mtx.push_back(row);
+    }
+    return matrx;
+}
+
+template<typename T>
 Matrix<T> operator*(const Matrix<T> &A, const Matrix<T> &B) {
     if (A.cols != B.rows) {
         cerr << "Невозможно умножить. Разные размерности";

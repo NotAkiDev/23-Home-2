@@ -55,5 +55,9 @@ public:
     // Алгебраическое дополнение и транспонирование для обратной матрицы
     Matrix<T> mtx_AA();
     Matrix<T> transpose();
+
+    // Статические методы создания единичной и нулевой матрицы
+    static Matrix<T> ones(int rows, int cols);
+    static Matrix<T> zeros(int rows, int cols);
 };
 #endif
